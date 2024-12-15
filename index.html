@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogueiritos do JODI</title>
+    <title>Blogueiros do JODI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,14 +18,6 @@
             color: white;
             padding: 20px;
             text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-        }
-
-        header p {
-            font-size: 1.2rem;
         }
 
         nav {
@@ -61,14 +53,10 @@
             margin: 0 0 10px;
         }
 
-        .post p {
-            line-height: 1.6;
-        }
-
-        .post small {
-            display: block;
-            color: gray;
+        .post img {
+            max-width: 100%;
             margin-top: 10px;
+            border-radius: 5px;
         }
 
         .auth-form {
@@ -80,7 +68,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        .auth-form input {
+        .auth-form input, .auth-form textarea {
             width: calc(100% - 20px);
             padding: 10px;
             margin: 10px 0;
@@ -98,10 +86,6 @@
             cursor: pointer;
         }
 
-        .auth-form button:hover {
-            background-color: #0056b3;
-        }
-
         footer {
             background-color: #333;
             color: white;
@@ -114,29 +98,37 @@
 <body>
 
 <header>
-    <h1>Blogueiritos do JODI</h1>
+    <h1>Blogeiros do JODI</h1>
     <p>O Blog do 2°JODI</p>
 </header>
 
 <nav>
     <a href="#home">Início</a>
     <a href="#sobre">Sobre Nós</a>
-    <a href="#projetos">Publicações</a>
+    <a href="#projetos">Projetos</a>
     <a href="#contato">Contato</a>
 </nav>
 
 <main>
-    <div id="auth-area" class="auth-form">
-        <h2>Login / Criar Conta</h2>
-        <input type="text" id="username" placeholder="Nome de Usuário" required>
-        <input type="password" id="password" placeholder="Senha" required>
+    <div id="login-area" class="auth-form">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Nome de Usuário" required>
+        <input type="password" id="login-password" placeholder="Senha" required>
         <button id="login-btn">Entrar</button>
-        <small>Não tem uma conta? Insira os dados e clique para criar.</small>
+        <button id="show-register-btn">Criar Conta</button>
+    </div>
+
+    <div id="register-area" class="auth-form" style="display: none;">
+        <h2>Criar Conta</h2>
+        <input type="text" id="register-username" placeholder="Nome de Usuário" required>
+        <input type="password" id="register-password" placeholder="Senha" required>
+        <button id="register-btn">Registrar</button>
     </div>
 
     <div id="publish-area" class="auth-form" style="display: none;">
         <h2>Criar uma Postagem</h2>
-        <textarea id="post-content" placeholder="Escreva algo..." rows="5" style="width: 100%;"></textarea>
+        <textarea id="post-content" placeholder="Escreva algo..." rows="5"></textarea>
+        <input type="file" id="post-image" accept="image/*">
         <button id="publish-btn">Publicar</button>
     </div>
 
@@ -146,7 +138,7 @@
 </main>
 
 <footer>
-    <p>&copy; 2025 Blogueiritos do JODI - O Blog do 2°JODI</p>
+    <p>&copy; 2025 Blogeiros do JODI - O Blog do 2°JODI. Todos os direitos reservados.</p>
 </footer>
 
 <script>
@@ -154,34 +146,65 @@
     let currentUser = null;
 
     document.getElementById('login-btn').addEventListener('click', () => {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+
+        if (!users[username] || users[username] !== password) {
+            alert('Nome de usuário ou senha incorretos!');
+            return;
+        }
+
+        currentUser = username;
+        document.getElementById('login-area').style.display = 'none';
+        document.getElementById('publish-area').style.display = 'block';
+        alert(`Bem-vindo(a), ${username}!`);
+    });
+
+    document.getElementById('show-register-btn').addEventListener('click', () => {
+        document.getElementById('login-area').style.display = 'none';
+        document.getElementById('register-area').style.display = 'block';
+    });
+
+    document.getElementById('register-btn').addEventListener('click', () => {
+        const username = document.getElementById('register-username').value.trim();
+        const password = document.getElementById('register-password').value.trim();
 
         if (!username || !password) {
             alert('Preencha todos os campos!');
             return;
         }
 
-        if (users[username] && users[username] !== password) {
-            alert('Senha incorreta!');
+        if (users[username]) {
+            alert('Usuário já existe!');
             return;
         }
 
-        if (!users[username]) {
-            users[username] = password;
-            alert('Conta criada com sucesso!');
-        }
-
-        currentUser = username;
-        document.getElementById('auth-area').style.display = 'none';
-        document.getElementById('publish-area').style.display = 'block';
-        alert(`Bem-vindo(a), ${username}!`);
+        users[username] = password;
+        alert('Conta criada com sucesso! Agora você pode fazer login.');
+        document.getElementById('register-area').style.display = 'none';
+        document.getElementById('login-area').style.display = 'block';
     });
 
     document.getElementById('publish-btn').addEventListener('click', () => {
         const content = document.getElementById('post-content').value.trim();
-        if (!content) {
-            alert('Escreva algo antes de publicar!');
+        const imageFile = document.getElementById('post-image').files[0];
+        let imageUrl = '';
+
+        if (imageFile) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imageUrl = e.target.result;
+                addPost(content, imageUrl);
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            addPost(content, imageUrl);
+        }
+    });
+
+    function addPost(content, imageUrl) {
+        if (!content && !imageUrl) {
+            alert('Escreva algo ou adicione uma imagem antes de publicar!');
             return;
         }
 
@@ -191,11 +214,13 @@
         postElement.innerHTML = `
             <h3>${currentUser}</h3>
             <p>${content}</p>
+            ${imageUrl ? `<img src="${imageUrl}" alt="Imagem da postagem">` : ''}
             <small>Publicado em ${new Date().toLocaleString()}</small>
         `;
         postArea.prepend(postElement);
         document.getElementById('post-content').value = '';
-    });
+        document.getElementById('post-image').value = '';
+    }
 </script>
 
 </body>
