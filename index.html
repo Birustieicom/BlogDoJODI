@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogueiros do JODI</title>
+    <title>Blogueiros do 2°JODI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,8 +16,16 @@
         header {
             background-color: #1e90ff;
             color: white;
-            padding: 20px;
+            padding: 20px 10px;
             text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            font-size: 1.2rem;
         }
 
         nav {
@@ -27,6 +35,7 @@
 
         nav a {
             float: left;
+            display: block;
             color: white;
             text-align: center;
             padding: 14px 16px;
@@ -49,57 +58,31 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        .post h3 {
+        .post h2 {
             margin: 0 0 10px;
         }
 
-        .post img {
-            max-width: 100%;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-
-        .auth-form {
-            background: white;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 400px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .auth-form input, .auth-form textarea {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .auth-form button {
-            width: 100%;
-            padding: 10px;
-            background-color: #1e90ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .post p {
+            line-height: 1.6;
         }
 
         footer {
             background-color: #333;
             color: white;
             text-align: center;
-            padding: 10px;
-            margin-top: 20px;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
+
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Blogeiros do JODI</h1>
-    <p>O Blog do 2°JODI</p>
+    <h1>Blogeiros do 2°JODI</h1>
+    <p>Jogos, Trabalhos e Eventos</p>
 </header>
 
 <nav>
@@ -110,117 +93,26 @@
 </nav>
 
 <main>
-    <div id="login-area" class="auth-form">
-        <h2>Login</h2>
-        <input type="text" id="login-username" placeholder="Nome de Usuário" required>
-        <input type="password" id="login-password" placeholder="Senha" required>
-        <button id="login-btn">Entrar</button>
-        <button id="show-register-btn">Criar Conta</button>
+    <div class="post">
+        <h2>Primeira Postagem</h2>
+        <p>Bem-vindo ao nosso blog! Aqui compartilharemos nossas criações e aprendizados do curso de programação e criação de jogos.</p>
     </div>
-
-    <div id="register-area" class="auth-form" style="display: none;">
-        <h2>Criar Conta</h2>
-        <input type="text" id="register-username" placeholder="Nome de Usuário" required>
-        <input type="password" id="register-password" placeholder="Senha" required>
-        <button id="register-btn">Registrar</button>
-    </div>
-
-    <div id="publish-area" class="auth-form" style="display: none;">
-        <h2>Criar uma Postagem</h2>
-        <textarea id="post-content" placeholder="Escreva algo..." rows="5"></textarea>
-        <input type="file" id="post-image" accept="image/*">
-        <button id="publish-btn">Publicar</button>
-    </div>
-
-    <div id="posts-area">
-        <h2>Publicações</h2>
+    <div class="post">
+        <h2>Projeto em Destaque</h2>
     </div>
 </main>
 
 <footer>
-    <p>&copy; 2025 Blogeiros do JODI - O Blog do 2°JODI. Todos os direitos reservados.</p>
+    <p>&copy; 2025 Blog do 2°JODI - Programação e Jogos. Todos os direitos reservados.</p>
 </footer>
 
 <script>
-    const users = {};
-    let currentUser = null;
-
-    document.getElementById('login-btn').addEventListener('click', () => {
-        const username = document.getElementById('login-username').value.trim();
-        const password = document.getElementById('login-password').value.trim();
-
-        if (!users[username] || users[username] !== password) {
-            alert('Nome de usuário ou senha incorretos!');
-            return;
-        }
-
-        currentUser = username;
-        document.getElementById('login-area').style.display = 'none';
-        document.getElementById('publish-area').style.display = 'block';
-        alert(`Bem-vindo(a), ${username}!`);
+    document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', event => {
+            event.preventDefault();
+            alert('Página em construção: ' + link.textContent);
+        });
     });
-
-    document.getElementById('show-register-btn').addEventListener('click', () => {
-        document.getElementById('login-area').style.display = 'none';
-        document.getElementById('register-area').style.display = 'block';
-    });
-
-    document.getElementById('register-btn').addEventListener('click', () => {
-        const username = document.getElementById('register-username').value.trim();
-        const password = document.getElementById('register-password').value.trim();
-
-        if (!username || !password) {
-            alert('Preencha todos os campos!');
-            return;
-        }
-
-        if (users[username]) {
-            alert('Usuário já existe!');
-            return;
-        }
-
-        users[username] = password;
-        alert('Conta criada com sucesso! Agora você pode fazer login.');
-        document.getElementById('register-area').style.display = 'none';
-        document.getElementById('login-area').style.display = 'block';
-    });
-
-    document.getElementById('publish-btn').addEventListener('click', () => {
-        const content = document.getElementById('post-content').value.trim();
-        const imageFile = document.getElementById('post-image').files[0];
-        let imageUrl = '';
-
-        if (imageFile) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imageUrl = e.target.result;
-                addPost(content, imageUrl);
-            };
-            reader.readAsDataURL(imageFile);
-        } else {
-            addPost(content, imageUrl);
-        }
-    });
-
-    function addPost(content, imageUrl) {
-        if (!content && !imageUrl) {
-            alert('Escreva algo ou adicione uma imagem antes de publicar!');
-            return;
-        }
-
-        const postArea = document.getElementById('posts-area');
-        const postElement = document.createElement('div');
-        postElement.classList.add('post');
-        postElement.innerHTML = `
-            <h3>${currentUser}</h3>
-            <p>${content}</p>
-            ${imageUrl ? `<img src="${imageUrl}" alt="Imagem da postagem">` : ''}
-            <small>Publicado em ${new Date().toLocaleString()}</small>
-        `;
-        postArea.prepend(postElement);
-        document.getElementById('post-content').value = '';
-        document.getElementById('post-image').value = '';
-    }
 </script>
 
 </body>
