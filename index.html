@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Escolar - Programação e Jogos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #1e90ff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .post {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .post h3 {
+            margin: 0 0 10px;
+        }
+
+        .post p {
+            line-height: 1.6;
+        }
+
+        .post small {
+            display: block;
+            color: gray;
+            margin-top: 10px;
+        }
+
+        .auth-form {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-form input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .auth-form button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Blog da Turma - Programação e Jogos</h1>
+    <p>Compartilhe suas ideias e projetos!</p>
+</header>
+
+<nav>
+    <a href="#home">Início</a>
+    <a href="#sobre">Sobre Nós</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#contato">Contato</a>
+</nav>
+
+<main>
+    <div id="auth-area" class="auth-form">
+        <h2>Login / Criar Conta</h2>
+        <input type="text" id="username" placeholder="Nome de Usuário" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button id="login-btn">Entrar</button>
+        <small>Não tem uma conta? Insira os dados e clique para criar.</small>
+    </div>
+
+    <div id="publish-area" class="auth-form" style="display: none;">
+        <h2>Criar uma Postagem</h2>
+        <textarea id="post-content" placeholder="Escreva algo..." rows="5" style="width: 100%;"></textarea>
+        <button id="publish-btn">Publicar</button>
+    </div>
+
+    <div id="posts-area">
+        <h2>Publicações</h2>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 Blog da Turma - Programação e Jogos. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+    const users = {};
+    let currentUser = null;
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!username || !password) {
+            alert('Preencha todos os campos!');
+            return;
+        }
+
+        if (users[username] && users[username] !== password) {
+            alert('Senha incorreta!');
+            return;
+        }
+
+        if (!users[username]) {
+            users[username] = password;
+            alert('Conta criada com sucesso!');
+        }
+
+        currentUser = username;
+        document.getElementById('auth-area').style.display = 'none';
+        document.getElementById('publish-area').style.display = 'block';
+        alert(`Bem-vindo(a), ${username}!`);
+    });
+
+    document.getElementById('publish-btn').addEventListener('click', () => {
+        const content = document.getElementById('post-content').value.trim();
+        if (!content) {
+            alert('Escreva algo antes de publicar!');
+            return;
+        }
+
+        const postArea = document.getElementById('posts-area');
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+        postElement.innerHTML = `
+            <h3>${currentUser}</h3>
+            <p>${content}</p>
+            <small>Publicado em ${new Date().toLocaleString()}</small>
+        `;
+        postArea.prepend(postElement);
+        document.getElementById('post-content').value = '';
+    });
+</script>
+
+</body>
+</html>
